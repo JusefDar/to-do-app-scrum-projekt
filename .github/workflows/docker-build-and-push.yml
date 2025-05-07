@@ -1,38 +1,35 @@
 name: Build and Push Docker Images
-
 on:
   push:
     branches:
       - main
-
 jobs:
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-
     env:
-      DOCKER_IMAGE_FRONTEND: jusefdarwiche/frontend
-      DOCKER_IMAGE_BACKEND: jusefdarwiche/backend
-
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_jusefdarwiche }}
+      DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and Push Frontend Image
-        run: |
-          docker build -t $DOCKER_IMAGE_FRONTEND:latest ./frontend
-          docker push $DOCKER_IMAGE_FRONTEND:latest
-
-      - name: Build and Push Backend Image
-        run: |
-          docker build -t $DOCKER_IMAGE_BACKEND:latest ./backend
-          docker push $DOCKER_IMAGE_BACKEND:latest
+    # 1. Checkout des Repository-Codes
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    # 2. Login bei Docker Hub
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_jusefdarwiche }}" --password-stdin
+    # 3. Docker-Image für das Frontend erstellen
+    - name: Build Frontend Image
+      run: |
+        docker build -t $DOCKERHUB_jusefdarwiche/frontend:latest ./frontend
+    # 4. Docker-Image für das Backend erstellen
+    - name: Build Backend Image
+      run: |
+        docker build -t $DOCKERHUB_jusefdarwiche/backend:latest ./backend
+    # 5. Frontend-Image zu Docker Hub pushen
+    - name: Push Frontend Image
+      run: |
+        docker push $DOCKERHUB_jusefdarwiche/frontend:latest
+    # 6. Backend-Image zu Docker Hub pushen
+    - name: Push Backend Image
+      run: |
+        docker push $DOCKERHUB_jusefdarwiche/backend:latest
