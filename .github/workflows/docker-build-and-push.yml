@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_IMAGE_FRONTEND: your-dockerhub-username/frontend
-      DOCKER_IMAGE_BACKEND: your-dockerhub-username/backend
+      DOCKER_IMAGE_FRONTEND: jusefdarwiche/frontend
+      DOCKER_IMAGE_BACKEND: jusefdarwiche/backend
 
     steps:
       - name: Checkout Code
@@ -24,7 +24,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKER_jusefdariche }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Frontend Image
